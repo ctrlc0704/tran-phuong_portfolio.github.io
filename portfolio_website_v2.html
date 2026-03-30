@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tran Thi Phuong | Data Analyst Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-deep: #0a0e17;
+  --bg-card: #111827;
+  --bg-card-hover: #1a2332;
+  --accent: #38bdf8;
+  --accent-glow: rgba(56, 189, 248, 0.15);
+  --accent-warm: #f59e0b;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: #1e293b;
+  --gradient-start: #38bdf8;
+  --gradient-end: #818cf8;
+  --font-display: 'DM Serif Display', serif;
+  --font-body: 'Sora', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+.bg-grid {
+  position: fixed; inset: 0;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(56,189,248,0.03) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(129,140,248,0.03) 0%, transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+.bg-grid::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: 
+    linear-gradient(rgba(56,189,248,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56,189,248,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; width: 100%; padding: 1rem 2rem;
+  display: flex; justify-content: space-between; align-items: center;
+  z-index: 1000; background: rgba(10,14,23,0.8);
+  backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  color: var(--text-secondary); text-decoration: none; font-size: 0.85rem;
+  font-weight: 400; letter-spacing: 0.5px; transition: color 0.3s; position: relative;
+}
+.nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--accent); transition: width 0.3s; }
+.nav-links a:hover { color: var(--accent); }
+.nav-links a:hover::after { width: 100%; }
+
+/* SECTIONS */
+section { position: relative; z-index: 1; padding: 6rem 2rem; max-width: 1100px; margin: 0 auto; }
+.section-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 0.5rem; }
+.section-title { font-family: var(--font-display); font-size: 2.8rem; color: var(--text-primary); margin-bottom: 1rem; line-height: 1.2; }
+.section-line { width: 60px; height: 3px; background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end)); border-radius: 2px; margin-bottom: 2.5rem; }
+
+/* HERO */
+#hero { min-height: 100vh; display: flex; align-items: center; padding-top: 5rem; }
+.hero-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.hero-tag { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1.2rem; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+.hero-name { font-family: var(--font-display); font-size: 4rem; line-height: 1.1; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.8s 0.4s forwards; }
+.hero-name .gradient { background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-desc { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 2rem; max-width: 480px; opacity: 0; animation: fadeUp 0.8s 0.6s forwards; }
+.hero-cta { display: flex; gap: 1rem; opacity: 0; animation: fadeUp 0.8s 0.8s forwards; }
+
+.btn { padding: 0.75rem 1.8rem; border-radius: 6px; font-family: var(--font-body); font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.3s; cursor: pointer; border: none; }
+.btn-primary { background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)); color: var(--bg-deep); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--accent-glow); }
+.btn-outline { background: transparent; color: var(--text-primary); border: 1px solid var(--border); }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Hero visual */
+.hero-visual { position: relative; opacity: 0; animation: fadeUp 0.8s 0.5s forwards; }
+.data-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; position: relative; overflow: hidden; }
+.data-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end)); }
+.data-card-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.5rem; }
+.data-card-dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-green { background: #22c55e; } .dot-yellow { background: #f59e0b; } .dot-red { background: #ef4444; }
+.data-card-title { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1px; }
+.mini-chart { display: flex; align-items: flex-end; gap: 6px; height: 120px; margin-bottom: 1.5rem; }
+.mini-bar { flex: 1; background: linear-gradient(to top, var(--gradient-start), var(--gradient-end)); border-radius: 4px 4px 0 0; opacity: 0.7; transition: opacity 0.3s; animation: barGrow 1s ease-out forwards; }
+.mini-bar:hover { opacity: 1; }
+@keyframes barGrow { from { height: 0 !important; } }
+.data-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.stat-item { text-align: center; }
+.stat-value { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+.stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 0.2rem; }
+.floating-badge { position: absolute; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; align-items: center; gap: 0.6rem; font-size: 0.8rem; animation: float 3s ease-in-out infinite; }
+.floating-badge.top-right { top: -20px; right: -20px; }
+.floating-badge.bottom-left { bottom: -15px; left: -20px; animation-delay: 1.5s; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+/* ABOUT */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+.about-text { font-size: 1rem; color: var(--text-secondary); line-height: 1.9; }
+.about-text p { margin-bottom: 1.2rem; }
+.about-info { display: grid; gap: 1rem; }
+.info-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.5rem; display: flex; align-items: center; gap: 1rem; transition: all 0.3s; }
+.info-card:hover { border-color: var(--accent); background: var(--bg-card-hover); transform: translateX(4px); }
+.info-icon { font-size: 1.3rem; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--accent-glow); border-radius: 8px; flex-shrink: 0; }
+.info-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+.info-value { font-size: 0.95rem; color: var(--text-primary); margin-top: 0.15rem; }
+
+/* SKILLS */
+.skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+.skill-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: all 0.3s; }
+.skill-item:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+.skill-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+.skill-name { font-size: 0.9rem; font-weight: 600; }
+.skill-pct { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); }
+.skill-bar-bg { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.skill-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end)); transition: width 1.5s ease-out; width: 0; }
+.tech-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 2rem; }
+.tech-tag { font-family: var(--font-mono); font-size: 0.75rem; padding: 0.4rem 0.9rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; color: var(--text-secondary); transition: all 0.3s; }
+.tech-tag:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+
+/* TIMELINE */
+.timeline { position: relative; padding-left: 3rem; }
+.timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--accent), var(--gradient-end), transparent); }
+.timeline-item { position: relative; margin-bottom: 2.5rem; padding-left: 1rem; }
+.timeline-dot { position: absolute; left: -2.95rem; top: 6px; width: 18px; height: 18px; border-radius: 50%; background: var(--bg-deep); border: 3px solid var(--accent); z-index: 2; }
+.timeline-item:hover .timeline-dot { background: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+.timeline-date { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); letter-spacing: 1px; margin-bottom: 0.3rem; }
+.timeline-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.2rem; }
+.timeline-company { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.6rem; }
+.timeline-desc { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; }
+
+/* PROJECTS - renamed from Portfolio */
+.project-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+  overflow: hidden; transition: all 0.4s; margin-bottom: 2rem;
+}
+.project-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+
+.project-card-inner { display: grid; grid-template-columns: 1fr 1fr; }
+.project-card-inner.reverse { direction: rtl; }
+.project-card-inner.reverse > * { direction: ltr; }
+
+.project-body { padding: 2rem; display: flex; flex-direction: column; justify-content: center; }
+.project-type { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; }
+.project-name { font-size: 1.3rem; font-weight: 600; margin-bottom: 0.8rem; line-height: 1.3; }
+.project-desc { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.2rem; line-height: 1.7; }
+.project-metric { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono); font-size: 0.8rem; color: #22c55e; background: rgba(34,197,94,0.1); padding: 0.3rem 0.8rem; border-radius: 20px; margin-bottom: 1rem; }
+.project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+.project-tag { font-family: var(--font-mono); font-size: 0.65rem; padding: 0.25rem 0.6rem; background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.15); border-radius: 4px; color: var(--text-muted); }
+
+.project-chart { padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.2); position: relative; }
+.project-chart canvas { max-width: 100%; max-height: 220px; }
+.chart-title { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.8rem; text-align: center; }
+
+/* GitHub link button */
+.github-link {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1.2rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600;
+  color: var(--text-primary); background: transparent; border: 1px solid var(--border);
+  text-decoration: none; transition: all 0.3s; width: fit-content;
+}
+.github-link:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+.github-link svg { width: 16px; height: 16px; fill: currentColor; }
+
+/* EDUCATION */
+.edu-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1.5rem; transition: all 0.3s; }
+.edu-card:hover { border-color: var(--accent); transform: translateX(4px); }
+.edu-icon { font-size: 2.5rem; flex-shrink: 0; }
+.edu-degree { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.3rem; }
+.edu-school { font-size: 0.9rem; color: var(--accent); margin-bottom: 0.3rem; }
+.edu-detail { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+/* CONTACT */
+#contact { text-align: center; }
+.contact-links { display: flex; justify-content: center; gap: 1.5rem; margin-top: 2rem; flex-wrap: wrap; }
+.contact-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.8rem 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transition: all 0.3s; }
+.contact-item:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+footer { position: relative; z-index: 1; text-align: center; padding: 2rem; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-muted); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s, transform 0.6s; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 768px) {
+  .hero-content, .about-grid, .skills-grid, .project-card-inner { grid-template-columns: 1fr !important; }
+  .hero-name { font-size: 2.5rem; }
+  .hero-visual { display: none; }
+  .section-title { font-size: 2rem; }
+  .nav-links { display: none; }
+  .project-card-inner.reverse { direction: ltr; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<nav>
+  <div class="nav-logo">&lt;TP/&gt;</div>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Resume</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-content">
+    <div>
+      <div class="hero-tag">// data analyst & ml enthusiast</div>
+      <h1 class="hero-name">Tran Thi<br><span class="gradient">Phuong</span></h1>
+      <p class="hero-desc">Turning raw data into actionable insights. 5+ years of hands-on experience in data operations, backed by a Master's in Computer Science from HCMUT.</p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#contact" class="btn btn-outline">Get In Touch</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="data-card">
+        <div class="data-card-header">
+          <span class="data-card-dot dot-green"></span><span class="data-card-dot dot-yellow"></span><span class="data-card-dot dot-red"></span>
+          <span class="data-card-title">analytics_dashboard.py</span>
+        </div>
+        <div class="mini-chart">
+          <div class="mini-bar" style="height:40%"></div><div class="mini-bar" style="height:65%"></div>
+          <div class="mini-bar" style="height:45%"></div><div class="mini-bar" style="height:80%"></div>
+          <div class="mini-bar" style="height:55%"></div><div class="mini-bar" style="height:90%"></div>
+          <div class="mini-bar" style="height:70%"></div><div class="mini-bar" style="height:95%"></div>
+          <div class="mini-bar" style="height:60%"></div><div class="mini-bar" style="height:85%"></div>
+          <div class="mini-bar" style="height:75%"></div><div class="mini-bar" style="height:100%"></div>
+        </div>
+        <div class="data-stats">
+          <div class="stat-item"><div class="stat-value">5+</div><div class="stat-label">Years Exp</div></div>
+          <div class="stat-item"><div class="stat-value">3</div><div class="stat-label">ML Projects</div></div>
+          <div class="stat-item"><div class="stat-value">M.Sc.</div><div class="stat-label">CS Degree</div></div>
+        </div>
+        <div class="floating-badge top-right"><span>&#x1F4CA;</span><span>Tableau</span></div>
+        <div class="floating-badge bottom-left"><span>&#x1F40D;</span><span>Python</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="fade-in">
+    <div class="section-label">// 01. Introduction</div>
+    <h2 class="section-title">Who Am I?</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text fade-in">
+      <p>I'm a data and operations professional with more than five years of experience working with production, quality, and operational datasets in the apparel manufacturing industry. I've managed data for global brands like Nike, Puma, and Express.</p>
+      <p>Recently completed a Master's degree in Computer Science at HCMUT with a focus on machine learning and deep learning. My thesis explored generative AI models for fashion image synthesis.</p>
+      <p>I'm passionate about applying data science and analytics to solve real-world problems, particularly in e-commerce, fintech, and technology-driven environments.</p>
+    </div>
+    <div class="about-info fade-in">
+      <div class="info-card"><div class="info-icon">&#x1F4CD;</div><div><div class="info-label">Location</div><div class="info-value">Ho Chi Minh City, Vietnam</div></div></div>
+      <div class="info-card"><div class="info-icon">&#x1F393;</div><div><div class="info-label">Degree</div><div class="info-value">M.Sc. Computer Science — HCMUT</div></div></div>
+      <div class="info-card"><div class="info-icon">&#x1F4E7;</div><div><div class="info-label">Email</div><div class="info-value">tranphuong666000@gmail.com</div></div></div>
+      <div class="info-card"><div class="info-icon">&#x1F310;</div><div><div class="info-label">GitHub</div><div class="info-value">github.com/ctrlc0704</div></div></div>
+      <div class="info-card"><div class="info-icon">&#x1F4AC;</div><div><div class="info-label">Languages</div><div class="info-value">Vietnamese (Native), English (IELTS 6.0)</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="fade-in">
+    <div class="section-label">// 02. Expertise</div>
+    <h2 class="section-title">Skills & Tools</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="skills-grid fade-in">
+    <div class="skill-item"><div class="skill-header"><span class="skill-name">Python (Pandas, NumPy, PyTorch)</span><span class="skill-pct">85%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="85%"></div></div></div>
+    <div class="skill-item"><div class="skill-header"><span class="skill-name">SQL (Queries, Joins, Aggregations)</span><span class="skill-pct">75%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="75%"></div></div></div>
+    <div class="skill-item"><div class="skill-header"><span class="skill-name">Data Visualization (Tableau, Matplotlib)</span><span class="skill-pct">80%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="80%"></div></div></div>
+    <div class="skill-item"><div class="skill-header"><span class="skill-name">Statistical Analysis & EDA</span><span class="skill-pct">80%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="80%"></div></div></div>
+    <div class="skill-item"><div class="skill-header"><span class="skill-name">Excel & Google Sheets (Advanced)</span><span class="skill-pct">90%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="90%"></div></div></div>
+    <div class="skill-item"><div class="skill-header"><span class="skill-name">Machine Learning (Scikit-learn, DL)</span><span class="skill-pct">75%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="75%"></div></div></div>
+    <div class="skill-item"><div class="skill-header"><span class="skill-name">Git & Version Control</span><span class="skill-pct">70%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="70%"></div></div></div>
+    <div class="skill-item"><div class="skill-header"><span class="skill-name">Cross-functional Communication</span><span class="skill-pct">90%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="90%"></div></div></div>
+  </div>
+  <div class="tech-tags fade-in">
+    <span class="tech-tag">Python</span><span class="tech-tag">SQL</span><span class="tech-tag">R</span><span class="tech-tag">C++</span>
+    <span class="tech-tag">PyTorch</span><span class="tech-tag">Scikit-learn</span><span class="tech-tag">Pandas</span><span class="tech-tag">NumPy</span>
+    <span class="tech-tag">Tableau</span><span class="tech-tag">Matplotlib</span><span class="tech-tag">Seaborn</span><span class="tech-tag">HuggingFace</span>
+    <span class="tech-tag">OpenCV</span><span class="tech-tag">Git</span><span class="tech-tag">Jupyter</span><span class="tech-tag">Google Colab</span>
+    <span class="tech-tag">ERP Systems</span><span class="tech-tag">PLM Systems</span>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="fade-in">
+    <div class="section-label">// 03. Career Path</div>
+    <h2 class="section-title">Experience</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="timeline fade-in">
+    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2025 — Present</div><div class="timeline-title">Merchandiser / Operations Data Coordinator</div><div class="timeline-company">New Times Vietnam — Ho Chi Minh City</div><div class="timeline-desc">Managing large volumes of operational data. Building production tracking dashboards and analytical reports. Analyzing delivery risks and coordinating data across buyers, factories, and QA teams.</div></div>
+    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2022 — 2025</div><div class="timeline-title">Production Merchandiser</div><div class="timeline-company">PoongIn Global Vietnam — Ho Chi Minh City</div><div class="timeline-desc">Managed production datasets in ERP/PLM systems for international buyers. Developed performance trackers and analytical reports. Analyzed operational bottlenecks using data.</div></div>
+    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2019 — 2022</div><div class="timeline-title">Quality Assurance Staff</div><div class="timeline-company">Dai Luc Company — Dong Nai</div><div class="timeline-desc">Collected and analyzed quality inspection data. Generated statistical reports on defect types and rates. Maintained datasets for Puma, Nike, and Express.</div></div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="fade-in">
+    <div class="section-label">// 04. Academic Background</div>
+    <h2 class="section-title">Education</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="edu-card fade-in">
+    <div class="edu-icon">&#x1F3DB;</div>
+    <div><div class="edu-degree">Master of Science in Computer Science</div><div class="edu-school">Ho Chi Minh City University of Technology (HCMUT) — 2025</div><div class="edu-detail">Thesis: Generative Models for Image Synthesis<br>Coursework: Machine Learning, Data Mining, Optimization, Databases</div></div>
+  </div>
+</section>
+
+<!-- PROJECTS (renamed from Portfolio) -->
+<section id="projects">
+  <div class="fade-in">
+    <div class="section-label">// 05. Featured Work</div>
+    <h2 class="section-title">Projects</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Project 1: KaiGen -->
+  <div class="project-card fade-in">
+    <div class="project-card-inner">
+      <div class="project-body">
+        <div class="project-type">Master's Thesis · 2025</div>
+        <div class="project-name">KaiGen — Fashion Image Synthesis</div>
+        <div class="project-desc">Built a custom dataset of 659 sketch-image pairs. Implemented a generative pipeline based on Stable Diffusion 1.5 with LoRA fine-tuning. Evaluated with FID, SSIM, and Inception Score.</div>
+        <div class="project-metric">&#x2714; Improved all metrics vs baseline</div>
+        <div class="project-tags">
+          <span class="project-tag">PyTorch</span><span class="project-tag">HuggingFace</span><span class="project-tag">Stable Diffusion</span><span class="project-tag">CLIP</span><span class="project-tag">VGG-16</span><span class="project-tag">LoRA</span>
+        </div>
+        <a href="https://github.com/ctrlc0704/KaiGen" target="_blank" class="github-link">
+          <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+      <div class="project-chart">
+        <div class="chart-title">Model Performance Metrics</div>
+        <canvas id="chart-kaigen"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project 2: Brain Tumor -->
+  <div class="project-card fade-in">
+    <div class="project-card-inner reverse">
+      <div class="project-body">
+        <div class="project-type">Deep Learning · 2024</div>
+        <div class="project-name">Brain Tumor Segmentation</div>
+        <div class="project-desc">Developed a U-Net deep learning model for brain tumor segmentation using the BraTS MRI dataset. Preprocessed 3D medical imaging data and optimized training on GPU.</div>
+        <div class="project-metric">&#x2714; Dice Coefficient: 0.87</div>
+        <div class="project-tags">
+          <span class="project-tag">PyTorch</span><span class="project-tag">U-Net</span><span class="project-tag">Medical Imaging</span><span class="project-tag">BraTS</span>
+        </div>
+        <a href="https://github.com/ctrlc0704/brain-tumor-segmentation" target="_blank" class="github-link">
+          <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+      <div class="project-chart">
+        <div class="chart-title">Segmentation Performance by Tumor Class</div>
+        <canvas id="chart-brain"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project 3: Music Genre -->
+  <div class="project-card fade-in">
+    <div class="project-card-inner">
+      <div class="project-body">
+        <div class="project-type">ML Classification · 2024</div>
+        <div class="project-name">Music Genre Classification</div>
+        <div class="project-desc">Built an end-to-end audio classification pipeline using MFCC feature extraction and KNN classifier on the GTZAN dataset for multi-class genre prediction.</div>
+        <div class="project-metric">&#x2714; Accuracy: 78%</div>
+        <div class="project-tags">
+          <span class="project-tag">Scikit-learn</span><span class="project-tag">Librosa</span><span class="project-tag">MFCC</span><span class="project-tag">KNN</span><span class="project-tag">GTZAN</span>
+        </div>
+        <a href="https://github.com/ctrlc0704/music-genre-classification" target="_blank" class="github-link">
+          <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+      <div class="project-chart">
+        <div class="chart-title">Accuracy by Genre</div>
+        <canvas id="chart-music"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project 4: Production Analytics -->
+  <div class="project-card fade-in">
+    <div class="project-card-inner reverse">
+      <div class="project-body">
+        <div class="project-type">Professional Analytics · 2019–Present</div>
+        <div class="project-name">Production & Quality Dashboards</div>
+        <div class="project-desc">6+ years building tracking dashboards, quality reports, and KPI monitoring for global fashion brands. Managed operational data across ERP/PLM systems.</div>
+        <div class="project-metric">&#x2714; Nike, Puma, Express clients</div>
+        <div class="project-tags">
+          <span class="project-tag">Excel</span><span class="project-tag">Pivot Tables</span><span class="project-tag">ERP</span><span class="project-tag">PLM</span><span class="project-tag">Dashboards</span>
+        </div>
+      </div>
+      <div class="project-chart">
+        <div class="chart-title">Production Quality Trend (Sample)</div>
+        <canvas id="chart-production"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="fade-in">
+    <div class="section-label">// 06. Get In Touch</div>
+    <h2 class="section-title">Let's Connect</h2>
+    <div class="section-line" style="margin-left:auto;margin-right:auto;"></div>
+    <p style="color:var(--text-secondary);max-width:500px;margin:0 auto 2rem;">I'm currently looking for Data Analyst opportunities. Feel free to reach out!</p>
+  </div>
+  <div class="contact-links fade-in">
+    <a href="mailto:tranphuong666000@gmail.com" class="contact-item"><span>&#x2709;</span> tranphuong666000@gmail.com</a>
+    <a href="tel:+84964249537" class="contact-item"><span>&#x1F4F1;</span> +84 964 249 537</a>
+    <a href="https://github.com/ctrlc0704" class="contact-item" target="_blank"><span>&#x1F4BB;</span> github.com/ctrlc0704</a>
+  </div>
+</section>
+
+<footer><p>&copy; 2026 Tran Thi Phuong — Built with passion for data.</p></footer>
+
+<script>
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      entry.target.querySelectorAll('.skill-bar-fill').forEach(bar => { bar.style.width = bar.dataset.width; });
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Chart defaults
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.font.family = "'Sora', sans-serif";
+Chart.defaults.font.size = 11;
+
+// 1. KaiGen - Radar chart comparing baseline vs model
+new Chart(document.getElementById('chart-kaigen'), {
+  type: 'radar',
+  data: {
+    labels: ['FID ↓', 'SSIM ↑', 'IS ↑', 'Realism', 'Diversity'],
+    datasets: [
+      { label: 'Baseline', data: [45, 55, 50, 40, 60], borderColor: '#64748b', backgroundColor: 'rgba(100,116,139,0.1)', borderWidth: 2, pointRadius: 3 },
+      { label: 'KaiGen (Ours)', data: [75, 80, 78, 82, 72], borderColor: '#38bdf8', backgroundColor: 'rgba(56,189,248,0.15)', borderWidth: 2, pointRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    scales: { r: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { display: false }, pointLabels: { font: { size: 10 } } } },
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15, font: { size: 10 } } } }
+  }
+});
+
+// 2. Brain Tumor - Horizontal bar chart
+new Chart(document.getElementById('chart-brain'), {
+  type: 'bar',
+  data: {
+    labels: ['Whole Tumor', 'Tumor Core', 'Enhancing', 'Average'],
+    datasets: [{
+      label: 'Dice Score',
+      data: [0.91, 0.85, 0.82, 0.87],
+      backgroundColor: ['rgba(56,189,248,0.7)', 'rgba(129,140,248,0.7)', 'rgba(245,158,11,0.7)', 'rgba(34,197,94,0.8)'],
+      borderColor: ['#38bdf8', '#818cf8', '#f59e0b', '#22c55e'],
+      borderWidth: 2, borderRadius: 6, barPercentage: 0.7
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: true,
+    scales: { x: { min: 0, max: 1, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { callback: v => v.toFixed(1) } }, y: { grid: { display: false } } },
+    plugins: { legend: { display: false } }
+  }
+});
+
+// 3. Music Genre - Polar area chart
+new Chart(document.getElementById('chart-music'), {
+  type: 'polarArea',
+  data: {
+    labels: ['Rock', 'Pop', 'Jazz', 'Classical', 'Hip-Hop', 'Blues', 'Metal', 'Country'],
+    datasets: [{
+      data: [82, 85, 75, 90, 72, 68, 80, 74],
+      backgroundColor: [
+        'rgba(56,189,248,0.5)', 'rgba(129,140,248,0.5)', 'rgba(245,158,11,0.5)', 'rgba(34,197,94,0.5)',
+        'rgba(236,72,153,0.5)', 'rgba(168,85,247,0.5)', 'rgba(239,68,68,0.5)', 'rgba(20,184,166,0.5)'
+      ],
+      borderColor: '#1e293b', borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    scales: { r: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { display: false } } },
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 8, font: { size: 9 } } } }
+  }
+});
+
+// 4. Production Quality - Line chart trend
+new Chart(document.getElementById('chart-production'), {
+  type: 'line',
+  data: {
+    labels: ['Q1 2020', 'Q2', 'Q3', 'Q4', 'Q1 2021', 'Q2', 'Q3', 'Q4', 'Q1 2022', 'Q2'],
+    datasets: [
+      { label: 'Defect Rate %', data: [4.2, 3.8, 3.5, 3.1, 2.9, 2.5, 2.3, 2.0, 1.8, 1.5], borderColor: '#38bdf8', backgroundColor: 'rgba(56,189,248,0.1)', fill: true, tension: 0.4, pointRadius: 3, borderWidth: 2 },
+      { label: 'On-time Delivery %', data: [88, 90, 91, 93, 92, 94, 95, 96, 97, 98], borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.05)', fill: true, tension: 0.4, pointRadius: 3, borderWidth: 2, yAxisID: 'y1' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { font: { size: 9 } } },
+      y: { position: 'left', grid: { color: 'rgba(255,255,255,0.05)' }, title: { display: true, text: 'Defect %', font: { size: 9 } }, min: 0, max: 5 },
+      y1: { position: 'right', grid: { display: false }, title: { display: true, text: 'Delivery %', font: { size: 9 } }, min: 80, max: 100 }
+    },
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 10, font: { size: 10 } } } }
+  }
+});
+</script>
+
+</body>
+</html>
